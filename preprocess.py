@@ -23,6 +23,7 @@ def minmax_imagescaling(S):
     S_std = (S - s_min) / (s_max - s_min)
     return (S_std * 255).astype(np.uint8)
 
+# calculate log scaled melspectorgram from wav file
 def wav_to_spectogram(filename):
     y, sr = librosa.load(filename)
 
@@ -31,16 +32,19 @@ def wav_to_spectogram(filename):
     S = np.log(S + 1e-9)
     return S, S.min(), S.max()
 
+# get image from spectogram and save it as 'name'
 def spectogram_img(S, name):
     img = 255 - np.flip(minmax_imagescaling(S), axis=0)
     io.imsave(name, img)
     return img
 
+# plot the spectogram
 def visualize_specto(S):
     fig = plt.figure(figsize = (10, 6))
     librosa.display.specshow(S, sr=sr, hop_length=hop_length, x_axis='time', y_axis='mel')
     plt.show()
 
+# revert from spectogram image array to spectogram
 def revert_to_specto(img, s_min, s_max):
     scaled = np.flip((255 - img), axis = 0)
     return (scaled / 255) * (s_max - s_min) + s_min
