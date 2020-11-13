@@ -17,7 +17,7 @@ n_fft = 2048
 n_mels = 128
 
 # scale spectogram to pixel 
-def minmax_imagescaling(S,):
+def minmax_imagescaling(S):
     s_min = S.min()
     s_max = S.max()
     S_std = (S - s_min) / (s_max - s_min)
@@ -29,23 +29,29 @@ def wav_to_spectogram(filename):
     S = librosa.feature.melspectrogram(y, sr=sr, n_fft=n_fft, hop_length=hop_length, n_mels=n_mels)
     # log scale
     S = np.log(S + 1e-9)
-    return S
+    return S, S.min(), S.max()
 
 def spectogram_img(S, name):
     img = 255 - np.flip(minmax_imagescaling(S), axis=0)
     io.imsave(name, img)
+    return img
 
 def visualize_specto(S):
     fig = plt.figure(figsize = (10, 6))
     librosa.display.specshow(S, sr=sr, hop_length=hop_length, x_axis='time', y_axis='mel')
     plt.show()
 
+def revert_to_specto(img, s_min, s_max):
+    scaled = np.flip((255 - img), axis = 0)
+    return (scaled / 255) * (s_max - s_min) + s_min
+
 def main():
-    spectogram = wav_to_spectogram("data/pop.00058.wav")
+    spectogram, s_min, s_max = wav_to_spectogram("data/pop.00058.wav")
     img = spectogram_img(spectogram, "test.png")
-    # wav = librosa.feature.inverse.mel_to_audio(spectogram)
-    # write('test.wav', sr, wav)
-    # playsound('test.wav')
+    reverted = revert_to_specto(img, s_min, s_max)
+    wav = librosa.feature.inverse.mel_to_audio(reverted)
+    write('test.wav', sr, wav)
+    playsound('test.wav')
 
 
 if __name__ == '__main__':
