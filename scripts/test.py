@@ -1,5 +1,6 @@
 def main():
-    return "CS 1470"
+    test_var = [1,2,3]
+    return test_var
 
 if __name__ == "__main__":
     main()
