@@ -1,0 +1,9 @@
+### Requirements given without version specifiers ###
+tensorflow
+numpy
+librosa
+matplotlib
+playsound
+scipy
+skimage
+random
