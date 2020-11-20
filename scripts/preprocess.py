@@ -97,64 +97,64 @@ def main():
     shuffle(blues)
     blues = np.array(blues)
     print("blues done")
-    for wav in os.scandir("data/classical"):
+    for wav in os.scandir("../data/classical"):
         s, _, _ = wav_to_spectogram(wav.path)
         classical.append(s[:, :1290])
         classical_labels.append(1)
     shuffle(classical)
     classical = np.array(classical)
     print("classical done")
-    for wav in os.scandir("data/country"):
+    for wav in os.scandir("../data/country"):
         s, _, _ = wav_to_spectogram(wav.path)
         country.append(s[:, :1290])
         country_labels.append(2)
     shuffle(country)
     country = np.array(country)
     print("country done")
-    for wav in os.scandir("data/disco"):
+    for wav in os.scandir("../data/disco"):
         s, _, _ = wav_to_spectogram(wav.path)
         disco.append(s[:, :1290])
         disco_labels.append(3)
     shuffle(disco)
     disco = np.array(disco)
     print("disco done")
-    for wav in os.scandir("data/hiphop"):
+    for wav in os.scandir("../data/hiphop"):
         s, _, _ = wav_to_spectogram(wav.path)
         hiphop.append(s[:, :1290])
         hiphop_labels.append(4)
     shuffle(hiphop)
     hiphop = np.array(hiphop)
     print("hiphop done")
-    for wav in os.scandir("data/jazz"):
-        if wav.path != "data/jazz/jazz.00054.wav":
+    for wav in os.scandir("../data/jazz"):
+        if wav.path != "../data/jazz/jazz.00054.wav":
             s, _, _ = wav_to_spectogram(wav.path)
             jazz.append(s[:, :1290])
             jazz_labels.append(5)
     shuffle(jazz)
     jazz = np.array(jazz)
     print("jazz done")
-    for wav in os.scandir("data/metal"):
+    for wav in os.scandir("../data/metal"):
         s, _, _ = wav_to_spectogram(wav.path)
         metal.append(s[:, :1290])
         metal_labels.append(6)
     shuffle(metal)
     metal = np.array(metal)
     print("metal done")
-    for wav in os.scandir("data/pop"):
+    for wav in os.scandir("../data/pop"):
         s, _, _ = wav_to_spectogram(wav.path)
         pop.append(s[:, :1290])
         pop_labels.append(7)
     shuffle(pop)
     pop = np.array(pop)
     print("pop done")
-    for wav in os.scandir("data/reggae"):
+    for wav in os.scandir("../data/reggae"):
         s, _, _ = wav_to_spectogram(wav.path)
         reggae.append(s[:, :1290])
         reggae_labels.append(8)
     shuffle(reggae)
     reggae = np.array(reggae)
     print("reggae done")
-    for wav in os.scandir("data/rock"):
+    for wav in os.scandir("../data/rock"):
         s, _, _ = wav_to_spectogram(wav.path)
         rock.append(s[:, :1290])
         rock_labels.append(9)
@@ -252,8 +252,7 @@ def main():
         + reggae_labels[90:]
         + rock_labels[90:]
     )
-    print(test_data.shape)
-    print(test_labels.shape)
+
     test_data, test_labels = shuffle_data(test_data, test_labels)
 
     return (
