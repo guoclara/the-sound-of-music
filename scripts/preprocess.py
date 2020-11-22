@@ -268,12 +268,7 @@ def main():
     )
 
     test_data, test_labels = shuffle_data(test_data, test_labels)
-
-    return (
-        (train_data, train_labels),
-        (validate_data, validate_labels),
-        (test_data, test_labels),
-    )
+    return train_data, train_labels, validate_data, validate_labels, test_data, test_labels
     # spectogram, s_min, s_max = wav_to_spectogram("data/pop.00058.wav")
     # print(spectogram.shape)
     # img = spectogram_img(spectogram, "test.png")
