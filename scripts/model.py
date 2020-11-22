@@ -55,7 +55,8 @@ class BasicCNN(tf.keras.Model):
     
     def loss_func(self, logits):
         """
-        spicy loss that regularizes representation of filter
+        Calculates loss for basic CNN architecture
         :param logits: raw predictions of shape [batch_sz, 10] 
         """
+        
         pass  
