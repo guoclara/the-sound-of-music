@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 
-# NOTE: spectrograms should be reshaped to [-1, x, x, 1] and of dtype tf.float32
+# NOTE: spectrograms should be reshaped to [-1, 128, 128, 1] and of dtype tf.float32
 
 class BasicCNN(tf.keras.Model):
 	def __init__(self):
@@ -33,7 +33,7 @@ class BasicCNN(tf.keras.Model):
 	def call(self, inputs):
 		"""
 		Run forward pass on input batch of spectrograms
-		:param inputs: batch of images, shape [batch_sz, x, x, 1]
+		:param inputs: batch of images, shape [batch_sz, 128, 128, 1]
 		:return: logits, with shape [batch_sz, 10]
 		"""
 		# NOTE: there is only one channel for input images
@@ -54,10 +54,17 @@ class BasicCNN(tf.keras.Model):
 		return logits
     
 
-	def loss_func(self, logits):
+	def loss_func(self, logits, labels):
 		"""
 		Calculates loss for basic CNN architecture
 		:param logits: raw predictions of shape [batch_sz, 10] 
 		"""
+		loss = tf.nn.sparse_softmax_cross_entropy_with_logits(labels, logits)
 		
-		pass  
+		return loss
+
+	def accuracy_func(self, logits, lables):
+		"""
+		Calculates model's prediction accuracy -- to be used only on test set
+		"""
+		pass
