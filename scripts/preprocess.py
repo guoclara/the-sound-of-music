@@ -67,6 +67,20 @@ def shuffle_data(inputs, labels):
     shuffled_labels = np.take(labels, indices)
     return shuffled_in, shuffled_labels
 
+# splits spectogram into 10 square matrices
+def make_square(genre, s):
+    genre.extend(
+        [s[:, :128], 
+        s[:, 128:2*128], 
+        s[:, 2*128:3*128], 
+        s[:, 3*128:4*128], 
+        s[:, 4*128:5*128], 
+        s[:, 5*128:6*128],
+        s[:, 6*128:7*128], 
+        s[:, 7*128:8*128], 
+        s[:, 8*128:9*128], 
+        s[:, 9*128:10*128]]
+    )
 
 def main():
     blues = []
@@ -92,168 +106,166 @@ def main():
 
     for wav in os.scandir("../data/blues"):
         s, _, _ = wav_to_spectogram(wav.path)
-        blues.append(s[:, :1290])
-        blues_labels.append(0)
+        make_square(blues, s)
+        blues_labels.extend([0]*10)
     shuffle(blues)
     blues = np.array(blues)
     # print("blues done")
-    for wav in os.scandir("data/classical"):
+    for wav in os.scandir("../data/classical"):
         s, _, _ = wav_to_spectogram(wav.path)
-        classical.append(s[:, :1290])
-        classical_labels.append(1)
+        make_square(classical, s)
+        classical_labels.extend([1]*10)
     shuffle(classical)
     classical = np.array(classical)
     # print("classical done")
-    for wav in os.scandir("data/country"):
+    for wav in os.scandir("../data/country"):
         s, _, _ = wav_to_spectogram(wav.path)
-        country.append(s[:, :1290])
-        country_labels.append(2)
+        make_square(country, s)
+        country_labels.extend([2]*10)
     shuffle(country)
     country = np.array(country)
     # print("country done")
-    for wav in os.scandir("data/disco"):
+    for wav in os.scandir("../data/disco"):
         s, _, _ = wav_to_spectogram(wav.path)
-        disco.append(s[:, :1290])
-        disco_labels.append(3)
+        make_square(disco, s)
+        disco_labels.extend([3]*10)
     shuffle(disco)
     disco = np.array(disco)
     # print("disco done")
-    for wav in os.scandir("data/hiphop"):
+    for wav in os.scandir("../data/hiphop"):
         s, _, _ = wav_to_spectogram(wav.path)
-        hiphop.append(s[:, :1290])
-        hiphop_labels.append(4)
+        make_square(hiphop, s)
+        hiphop_labels.extend([4]*10)
     shuffle(hiphop)
     hiphop = np.array(hiphop)
     # print("hiphop done")
-    for wav in os.scandir("data/jazz"):
-        if wav.path != "data/jazz/jazz.00054.wav":
+    for wav in os.scandir("../data/jazz"):
+        if wav.path != "../data/jazz/jazz.00054.wav":
             s, _, _ = wav_to_spectogram(wav.path)
-            jazz.append(s[:, :1290])
-            jazz_labels.append(5)
+            make_square(jazz, s)
+            jazz_labels.extend([5]*10)
     shuffle(jazz)
     jazz = np.array(jazz)
     # print("jazz done")
-    for wav in os.scandir("data/metal"):
+    for wav in os.scandir("../data/metal"):
         s, _, _ = wav_to_spectogram(wav.path)
-        metal.append(s[:, :1290])
-        metal_labels.append(6)
+        make_square(metal, s)
+        metal_labels.extend([6]*10)
     shuffle(metal)
     metal = np.array(metal)
     # print("metal done")
-    for wav in os.scandir("data/pop"):
+    for wav in os.scandir("../data/pop"):
         s, _, _ = wav_to_spectogram(wav.path)
-        pop.append(s[:, :1290])
-        pop_labels.append(7)
+        make_square(pop, s)
+        pop_labels.extend([7]*10)
     shuffle(pop)
     pop = np.array(pop)
     # print("pop done")
-    for wav in os.scandir("data/reggae"):
+    for wav in os.scandir("../data/reggae"):
         s, _, _ = wav_to_spectogram(wav.path)
-        reggae.append(s[:, :1290])
-        reggae_labels.append(8)
+        make_square(reggae, s)
+        reggae_labels.extend([8]*10)
     shuffle(reggae)
     reggae = np.array(reggae)
     # print("reggae done")
-    for wav in os.scandir("data/rock"):
+    for wav in os.scandir("../data/rock"):
         s, _, _ = wav_to_spectogram(wav.path)
-        rock.append(s[:, :1290])
-        rock_labels.append(9)
+        make_square(rock, s)
+        rock_labels.extend([9]*10)
     shuffle(rock)
     rock = np.array(rock)
     # print("rock done")
 
     train_data = np.concatenate(
         (
-            blues[:80],
-            classical[:80],
-            country[:80],
-            disco[:80],
-            hiphop[:80],
-            jazz[:80],
-            metal[:80],
-            pop[:80],
-            reggae[:80],
-            rock[:80],
+            blues[:800],
+            classical[:800],
+            country[:800],
+            disco[:800],
+            hiphop[:800],
+            jazz[:800],
+            metal[:800],
+            pop[:800],
+            reggae[:800],
+            rock[:800],
         ),
         axis=0,
     )
 
     train_labels = np.array(
-        blues_labels[:80]
-        + classical_labels[:80]
-        + country_labels[:80]
-        + disco_labels[:80]
-        + hiphop_labels[:80]
-        + jazz_labels[:80]
-        + metal_labels[:80]
-        + pop_labels[:80]
-        + reggae_labels[:80]
-        + rock_labels[:80]
+        blues_labels[:800]
+        + classical_labels[:800]
+        + country_labels[:800]
+        + disco_labels[:800]
+        + hiphop_labels[:800]
+        + jazz_labels[:800]
+        + metal_labels[:800]
+        + pop_labels[:800]
+        + reggae_labels[:800]
+        + rock_labels[:800]
     )
 
     train_data, train_labels = shuffle_data(train_data, train_labels)
 
     validate_data = np.concatenate(
         (
-            blues[80:90],
-            classical[80:90],
-            country[80:90],
-            disco[80:90],
-            hiphop[80:90],
-            jazz[80:90],
-            metal[80:90],
-            pop[80:90],
-            reggae[80:90],
-            rock[80:90],
+            blues[800:900],
+            classical[800:900],
+            country[800:900],
+            disco[800:900],
+            hiphop[800:900],
+            jazz[800:900],
+            metal[800:900],
+            pop[800:900],
+            reggae[800:900],
+            rock[800:900],
         ),
         axis=0,
     )
 
     validate_labels = np.array(
-        blues_labels[80:90]
-        + classical_labels[80:90]
-        + country_labels[80:90]
-        + disco_labels[80:90]
-        + hiphop_labels[80:90]
-        + jazz_labels[80:90]
-        + metal_labels[80:90]
-        + pop_labels[80:90]
-        + reggae_labels[80:90]
-        + rock_labels[80:90]
+        blues_labels[800:900]
+        + classical_labels[800:900]
+        + country_labels[800:900]
+        + disco_labels[800:900]
+        + hiphop_labels[800:900]
+        + jazz_labels[800:900]
+        + metal_labels[800:900]
+        + pop_labels[800:900]
+        + reggae_labels[800:900]
+        + rock_labels[800:900]
     )
 
     validate_data, validate_labels = shuffle_data(validate_data, validate_labels)
 
     test_data = np.concatenate(
         (
-            blues[90:],
-            classical[90:],
-            country[90:],
-            disco[90:],
-            hiphop[90:],
-            jazz[90:],
-            metal[90:],
-            pop[90:],
-            reggae[90:],
-            rock[90:],
+            blues[900:],
+            classical[900:],
+            country[900:],
+            disco[900:],
+            hiphop[900:],
+            jazz[900:],
+            metal[900:],
+            pop[900:],
+            reggae[900:],
+            rock[900:],
         ),
         axis=0,
     )
 
     test_labels = np.array(
-        blues_labels[90:]
-        + classical_labels[90:]
-        + country_labels[90:]
-        + disco_labels[90:]
-        + hiphop_labels[90:]
-        + jazz_labels[90:]
-        + metal_labels[90:]
-        + pop_labels[90:]
-        + reggae_labels[90:]
-        + rock_labels[90:]
+        blues_labels[900:]
+        + classical_labels[900:]
+        + country_labels[900:]
+        + disco_labels[900:]
+        + hiphop_labels[900:]
+        + jazz_labels[900:]
+        + metal_labels[900:]
+        + pop_labels[900:]
+        + reggae_labels[900:]
+        + rock_labels[900:]
     )
-    #print(test_data.shape)
-    # print(test_labels.shape)
     test_data, test_labels = shuffle_data(test_data, test_labels)
 
     all_data = [(train_data, train_labels), (validate_data, validate_labels), (test_data, test_labels)]
