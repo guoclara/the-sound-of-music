@@ -5,5 +5,5 @@ librosa
 matplotlib
 playsound
 scipy
-skimage
+scikit-image
 random
