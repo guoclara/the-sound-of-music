@@ -38,20 +38,22 @@ class BasicCNN(tf.keras.Model):
 		"""
 		# NOTE: there is only one channel for input images
 		conv1_out = self.conv1(inputs)
-		conv1_pool = self.pool1(conv1_out)
-		conv2_out = self.conv2(conv1_pool)
-		# TODO: add mask here (mask feature map with template for each filter)
-		conv2_pool = self.pool2(conv2_out)
+		# conv1_pool = self.pool1(conv1_out)
+		# conv2_out = self.conv2(conv1_pool)
+		# # TODO: add mask here (mask feature map with template for each filter)
+		# conv2_pool = self.pool2(conv2_out)
   
-		# Flatten tensor to pass through linear layer(s)
-		flattened = self.flat(conv2_pool)
-		print(f"flat shape: {tf.shape(flattened)}")
-		dense_out = self.dense1(flattened)
-		dropout = self.dropout(dense_out)
-		logits = self.dense2(dropout) # Shape [batch_sz, 10]
+		# # Flatten tensor to pass through linear layer(s)
+		# flattened = self.flat(conv2_pool)
+		# print(f"flat shape: {tf.shape(flattened)}")
+		# dense_out = self.dense1(flattened)
+		# dropout = self.dropout(dense_out)
+		# logits = self.dense2(dropout) # Shape [batch_sz, 10]
 
-		# NOTE: compute softmax on logits (and find classes) in loss func
-		return logits
+		# # NOTE: compute softmax on logits (and find classes) in loss func
+		# return logits
+	
+		return conv1_out
     
 
 	def loss_func(self, logits, labels):
