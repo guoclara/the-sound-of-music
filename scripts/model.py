@@ -44,7 +44,7 @@ class BasicCNN(tf.keras.Model):
 		conv2_pool = self.pool2(conv2_out)
   
 		# Flatten tensor to pass through linear layer(s)
-		flattened = self.flat(conv2_pool)
+		flattened = self.flatten(conv2_pool)
 		print(f"flat shape: {tf.shape(flattened)}")
 		dense_out = self.dense1(flattened)
 		dropout = self.dropout(dense_out)
