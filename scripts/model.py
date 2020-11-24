@@ -71,8 +71,9 @@ class BasicCNN(tf.keras.Model):
 		:param labels: correct labels for given batch [batch_sz]
 		"""
 		num_correct_predictions = tf.equal(tf.argmax(logits, 1), labels)
-		return tf.reduce_mean(tf.cast(num_correct_predictions, tf.float32)
-	
+		
+  		return tf.reduce_mean(tf.cast(num_correct_predictions, tf.float32))
+
 	# feature map = output of filter
 	def interpretable_loss(self, feature_map, labels, z):
 		pass
