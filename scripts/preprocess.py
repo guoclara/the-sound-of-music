@@ -82,6 +82,18 @@ def make_square(genre, s):
         s[:, 9*128:10*128]]
     )
 
+def play_masked_spectogram():
+    spectogram, s_min, s_max = wav_to_spectogram("../data/pop/pop.00058.wav")
+    spectogram = spectogram[:, 5*128:6*128]
+    mask = np.ones((64,64))
+    mask = np.pad(mask, 32)
+    masked_s = np.multiply(spectogram, mask)
+    # img = spectogram_img(spectogram, "test.png")
+    # reverted = revert_to_specto(img, s_min, s_max)
+    wav = librosa.feature.inverse.mel_to_audio(masked_s)
+    write('masked.wav', sr, wav)
+    playsound('masked.wav')
+
 def main():
     blues = []
     classical = []
@@ -275,7 +287,6 @@ def main():
     # wav = librosa.feature.inverse.mel_to_audio(reverted)
     # write('test.wav', sr, wav)
     # playsound('test.wav')
-
 
 if __name__ == "__main__":
     main()
