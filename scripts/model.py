@@ -76,6 +76,7 @@ class BasicCNN(tf.keras.Model):
 	
 	# feature map = output of filter
 	def interpretable_loss(self, feature_map, labels, z):
+		pass
 		# is_negative = true
 		# for all mu possible
 			# if is_negative:
