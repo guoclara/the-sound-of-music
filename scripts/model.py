@@ -62,7 +62,7 @@ class BasicCNN(tf.keras.Model):
 		"""
 		loss = tf.nn.sparse_softmax_cross_entropy_with_logits(labels, logits)
 		
-		return loss
+		return tf.reduce_mean(loss)
 
 	def accuracy_func(self, logits, labels):
 		"""
