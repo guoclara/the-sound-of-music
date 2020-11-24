@@ -72,3 +72,23 @@ class BasicCNN(tf.keras.Model):
 		"""
 		num_correct_predictions = tf.equal(tf.argmax(logits, 1), labels)
 		return tf.reduce_mean(num_correct_predictions)
+		pass
+	
+	# feature map = output of filter
+	def interpretable_loss(self, feature_map, labels, z):
+		# is_negative = true
+		# for all mu possible
+			# if is_negative:
+				# set p(mu) = 1-alpha
+				# get negative template
+				# is_negative = false
+			# else
+				# set p(mu) = alpha/n^2
+				# get template from argmax
+			# for map in feature_map
+				# p(x|mu) = 1/z * exp(tr(map * template))
+				# p(x) = 0
+				# for all mu
+					# p(x) += p(mu) * p(x|mu) = p(mu) * [1/z * exp(tr(map * template))]
+				# inner_sum += p(x|mu) * log (p(x|mu)/ p(x))
+			# loss += p(mu) * inner_sum
