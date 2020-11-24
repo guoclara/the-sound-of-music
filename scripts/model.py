@@ -58,13 +58,17 @@ class BasicCNN(tf.keras.Model):
 		"""
 		Calculates loss for basic CNN architecture
 		:param logits: raw predictions of shape [batch_sz, 10] 
+		:param labels: correct labels for given batch [batch_sz]
 		"""
 		loss = tf.nn.sparse_softmax_cross_entropy_with_logits(labels, logits)
 		
 		return loss
 
-	def accuracy_func(self, logits, lables):
+	def accuracy_func(self, logits, labels):
 		"""
-		Calculates model's prediction accuracy -- to be used only on test set
+		Calculates model's prediction accuracy
+		:param logits: raw predictions of shape [batch_sz, 10]
+		:param labels: correct labels for given batch [batch_sz]
 		"""
-		pass
+		num_correct_predictions = tf.equal(tf.argmax(logits, 1), labels)
+		return tf.reduce_mean(num_correct_predictions)
