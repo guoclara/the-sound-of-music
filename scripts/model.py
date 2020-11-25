@@ -19,9 +19,9 @@ class BasicCNN(tf.keras.Model):
 
 		# NOTE: use_bias for Conv2D is 'true' on default
 		# Define model layers for convolution
-		self.conv1 = tf.keras.layers.Conv2D(32, (5,5), (1,1), 'same', activation='relu')
+		self.conv1 = tf.keras.layers.Conv2D(32, (3,3), (1,1), 'same', activation='relu')
 		self.pool1 = tf.keras.layers.MaxPool2D((2,2), strides=2)
-		self.conv2 = tf.keras.layers.Conv2D(64, (5,5), (1,1), 'same', activation='relu')
+		self.conv2 = tf.keras.layers.Conv2D(64, (3,3), (1,1), 'same', activation='relu')
 		self.pool2 = tf.keras.layers.MaxPool2D((2,2), strides=2)
 
 		# Define model layers for feed forward
