@@ -122,35 +122,35 @@ def main():
         blues_labels.extend([0]*10)
     shuffle(blues)
     blues = np.array(blues)
-    # print("blues done")
+    print("blues done")
     for wav in os.scandir("../data/classical"):
         s, _, _ = wav_to_spectogram(wav.path)
         make_square(classical, s)
         classical_labels.extend([1]*10)
     shuffle(classical)
     classical = np.array(classical)
-    # print("classical done")
+    print("classical done")
     for wav in os.scandir("../data/country"):
         s, _, _ = wav_to_spectogram(wav.path)
         make_square(country, s)
         country_labels.extend([2]*10)
     shuffle(country)
     country = np.array(country)
-    # print("country done")
+    print("country done")
     for wav in os.scandir("../data/disco"):
         s, _, _ = wav_to_spectogram(wav.path)
         make_square(disco, s)
         disco_labels.extend([3]*10)
     shuffle(disco)
     disco = np.array(disco)
-    # print("disco done")
+    print("disco done")
     for wav in os.scandir("../data/hiphop"):
         s, _, _ = wav_to_spectogram(wav.path)
         make_square(hiphop, s)
         hiphop_labels.extend([4]*10)
     shuffle(hiphop)
     hiphop = np.array(hiphop)
-    # print("hiphop done")
+    print("hiphop done")
     for wav in os.scandir("../data/jazz"):
         if wav.path != "../data/jazz/jazz.00054.wav":
             s, _, _ = wav_to_spectogram(wav.path)
@@ -158,35 +158,35 @@ def main():
             jazz_labels.extend([5]*10)
     shuffle(jazz)
     jazz = np.array(jazz)
-    # print("jazz done")
+    print("jazz done")
     for wav in os.scandir("../data/metal"):
         s, _, _ = wav_to_spectogram(wav.path)
         make_square(metal, s)
         metal_labels.extend([6]*10)
     shuffle(metal)
     metal = np.array(metal)
-    # print("metal done")
+    print("metal done")
     for wav in os.scandir("../data/pop"):
         s, _, _ = wav_to_spectogram(wav.path)
         make_square(pop, s)
         pop_labels.extend([7]*10)
     shuffle(pop)
     pop = np.array(pop)
-    # print("pop done")
+    print("pop done")
     for wav in os.scandir("../data/reggae"):
         s, _, _ = wav_to_spectogram(wav.path)
         make_square(reggae, s)
         reggae_labels.extend([8]*10)
     shuffle(reggae)
     reggae = np.array(reggae)
-    # print("reggae done")
+    print("reggae done")
     for wav in os.scandir("../data/rock"):
         s, _, _ = wav_to_spectogram(wav.path)
         make_square(rock, s)
         rock_labels.extend([9]*10)
     shuffle(rock)
     rock = np.array(rock)
-    # print("rock done")
+    print("rock done")
 
     train_data = np.concatenate(
         (
@@ -279,7 +279,7 @@ def main():
         + rock_labels[900:]
     )
     test_data, test_labels = shuffle_data(test_data, test_labels)
-    return train_data, train_labels, validate_data, validate_labels, test_data, test_labels
+    return (train_data, train_labels, validate_data, validate_labels, test_data, test_labels)
     # spectogram, s_min, s_max = wav_to_spectogram("data/pop.00058.wav")
     # print(spectogram.shape)
     # img = spectogram_img(spectogram, "test.png")
