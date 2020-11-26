@@ -28,14 +28,31 @@ def minmax_scaling(S, factor):
 # given a spectogram input and model weights, produce the masked input
 # according to the model's activations
 # if a png or wav file name is given, produce
+
+# S: input spectogram
+# weights: list of (weight, bias) tuples
 def intrepret_activation(S, weights, png_name = None, wav_name = None):
-    # activations = first layer(inputs) 
-    activations = S
+    conv = S
+    # track the conv output of each layer
+    activations = []
+    activations.append(conv)
+    for filter, bias in weights:
+        conv = tf.nn.conv2d(conv, filter, strides = (1,1), padding = "SAME")
+        conv = tf.nn.bias_add(conv, bias)
+        activations.append(conv)
+
+    # deconvolve starting from the output and working back to the input size
+    deconv = conv
+    activations.pop()
+    for filter, _ in weights[::-1]:
+        deconv = tf.nn.conv2d_transpose(deconv, filter, tf.shape(activations[-1]).numpy(), strides = (1,1), padding = "SAME")
+        activations.pop()
+
     # scale activations to 0 to 1 to create a mask
-    activation_mask = minmax_scaling(activations, 1)
+    activation_mask = minmax_scaling(deconv, 1)
     # element wise multiply to scale spectogram accordingly
     masked = np.multiply(S, activation_mask)
-    
+
     if png_name:
         masked_img = spectogram_img(masked, png_name)
     if wav_name:
