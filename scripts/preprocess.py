@@ -8,6 +8,7 @@ from scipy.io.wavfile import write
 from skimage import io
 from random import shuffle
 import os
+import tensorflow as tf
 
 # number of samples per second (length of wav file = len(y)/sr)
 sr = 22050
@@ -27,37 +28,47 @@ def minmax_scaling(S, factor):
 
 # given a spectogram input and model weights, produce the masked input
 # according to the model's activations
-# if a png or wav file name is given, produce
+# if a png or wav file name is given, produce the png/wav file
+# if no filter_index is specified, create representations for all filter activations
+# png_name and wav_name must be a list of length num_filters in this case
 
 # S: input spectogram
 # weights: list of (weight, bias) tuples
-def intrepret_activation(S, weights, png_name = None, wav_name = None):
-    conv = S
-    # track the conv output of each layer
-    activations = []
-    activations.append(conv)
-    for filter, bias in weights:
-        conv = tf.nn.conv2d(conv, filter, strides = (1,1), padding = "SAME")
-        conv = tf.nn.bias_add(conv, bias)
-        activations.append(conv)
+def intrepret_activation(S, weights, filter_index = None, png_name = None, wav_name = None):
+    filter_weight, bias = weights
 
-    # deconvolve starting from the output and working back to the input size
-    deconv = conv
-    activations.pop()
-    for filter, _ in weights[::-1]:
-        deconv = tf.nn.conv2d_transpose(deconv, filter, tf.shape(activations[-1]).numpy(), strides = (1,1), padding = "SAME")
-        activations.pop()
+    conv = tf.nn.conv2d(S, filter_weight, strides = (1,1), padding = "SAME")
+    conv = tf.nn.bias_add(conv, bias) # shape = (batchSz, 128, 128, 32)
+    conv = conv.numpy()
 
-    # scale activations to 0 to 1 to create a mask
-    activation_mask = minmax_scaling(deconv, 1)
-    # element wise multiply to scale spectogram accordingly
-    masked = np.multiply(S, activation_mask)
+    S = np.squeeze(S)
 
-    if png_name:
-        masked_img = spectogram_img(masked, png_name)
-    if wav_name:
-        wav = librosa.feature.inverse.mel_to_audio(masked)
-        write(wav_name, sr, wav)
+    if filter_index is not None:
+        filter_activations = np.reshape(conv[:, :, :, filter_index], (128, 128))
+        # scale activations to 0 to 1 to create a mask
+        activation_mask = minmax_scaling(filter_activations, 1)
+        # element wise multiply to scale spectogram accordingly
+        masked = np.multiply(S, activation_mask)
+        if png_name is not None:
+            masked_img = spectogram_img(masked, png_name)
+        if wav_name is not None:
+            wav = librosa.feature.inverse.mel_to_audio(masked)
+            write(wav_name, sr, wav)
+    else:
+        masked = []
+        # iterate through each filter
+        for i in range(tf.shape(conv)[-1]):
+            filter_activations = np.reshape(conv[:, :, :, i], (128, 128))
+            # scale activations to 0 to 1 to create a mask
+            activation_mask = minmax_scaling(filter_activations, 1)
+            # element wise multiply to scale spectogram accordingly
+            masked_s = np.multiply(S, activation_mask)
+
+            if png_name is not None:
+                masked_img = spectogram_img(masked_s, png_name[i])
+            if wav_name is not None:
+                wav = librosa.feature.inverse.mel_to_audio(masked_s)
+                write(wav_name[i], sr, wav)
 
     return masked
 
@@ -118,7 +129,7 @@ def make_square(genre, s):
         s[:, 9*128:10*128]]
     )
 
-def play_masked_spectogram():
+def play_masked_spectogram_test():
     spectogram, s_min, s_max = wav_to_spectogram("../data/pop/pop.00058.wav")
     spectogram = spectogram[:, 5*128:6*128]
     mask = np.ones((64,64))
@@ -316,13 +327,23 @@ def main():
     )
     test_data, test_labels = shuffle_data(test_data, test_labels)
     return (train_data, train_labels, validate_data, validate_labels, test_data, test_labels)
-    # spectogram, s_min, s_max = wav_to_spectogram("data/pop.00058.wav")
-    # print(spectogram.shape)
+
+
+def auralise_test():
+    spectogram, s_min, s_max = wav_to_spectogram("../data/pop/pop.00058.wav")
+    spectogram = np.reshape(spectogram[:, 5*128:6*128], (-1, 128, 128, 1))
+    filter_weight = np.ones((3, 3, 1, 32))
+    bias = np.ones(32)
+    weights = (filter_weight, bias)
+    masked = intrepret_activation(spectogram, weights, filter_index = 0, png_name = "conv1_filter1.png", wav_name = "conv1_filter1.wav")
+    playsound('conv1_filter1.wav')
+    print(masked)
+
     # img = spectogram_img(spectogram, "test.png")
     # reverted = revert_to_specto(img, s_min, s_max)
     # wav = librosa.feature.inverse.mel_to_audio(reverted)
     # write('test.wav', sr, wav)
-    # playsound('test.wav')
 
 if __name__ == "__main__":
     main()
+    # auralise_test()
