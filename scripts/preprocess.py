@@ -18,13 +18,31 @@ n_fft = 2048
 # partition entire frequency spectrum into 128 evenly spaced frequencies to the human ear (ie mel scale, not absolute)
 n_mels = 128
 
-# scale spectogram to pixel
-def minmax_imagescaling(S):
+# scale S values to 0 to factor
+def minmax_scaling(S, factor):
     s_min = S.min()
     s_max = S.max()
     S_std = (S - s_min) / (s_max - s_min)
-    return (S_std * 255).astype(np.uint8)
+    return (S_std * factor)
 
+# given a spectogram input and model weights, produce the masked input
+# according to the model's activations
+# if a png or wav file name is given, produce
+def intrepret_activation(S, weights, png_name = None, wav_name = None):
+    # activations = first layer(inputs) 
+    activations = S
+    # scale activations to 0 to 1 to create a mask
+    activation_mask = minmax_scaling(activations, 1)
+    # element wise multiply to scale spectogram accordingly
+    masked = np.multiply(S, activation_mask)
+    
+    if png_name:
+        masked_img = spectogram_img(masked, png_name)
+    if wav_name:
+        wav = librosa.feature.inverse.mel_to_audio(masked)
+        write(wav_name, sr, wav)
+
+    return masked
 
 # calculate log scaled melspectorgram from wav file
 def wav_to_spectogram(filename):
@@ -40,7 +58,8 @@ def wav_to_spectogram(filename):
 
 # get image from spectogram and save it as 'name'
 def spectogram_img(S, name):
-    img = 255 - np.flip(minmax_imagescaling(S), axis=0)
+    # scale to 0 to 255 (bw png pixel values)
+    img = 255 - np.flip(minmax_scaling(S, 255).astype(np.uint8), axis=0)
     io.imsave(name, img)
     return img
 
