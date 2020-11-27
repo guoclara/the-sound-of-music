@@ -34,7 +34,7 @@ def minmax_scaling(S, factor):
 
 # S: input spectogram
 # weights: list of (weight, bias) tuples
-def intrepret_activation(S, weights, filter_index = None, png_name = None, wav_name = None):
+def interpret_activation(S, weights, filter_index = None, png_name = None, wav_name = None):
     filter_weight, bias = weights
 
     conv = tf.nn.conv2d(S, filter_weight, strides = (1,1), padding = "SAME")
