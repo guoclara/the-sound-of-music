@@ -38,7 +38,7 @@ def interpret_activation(S, weights, filter_index = None, png_name = None, wav_n
     filter_weight, bias = weights
 
     conv = tf.nn.conv2d(S, filter_weight, strides = (1,1), padding = "SAME")
-    conv = tf.nn.bias_add(conv, bias) # shape = (batchSz, 128, 128, 32)
+    conv = tf.nn.relu(tf.nn.bias_add(conv, bias)) # shape = (batchSz, 128, 128, 32)
     conv = conv.numpy()
 
     S = np.squeeze(S)
@@ -330,20 +330,20 @@ def main():
 
 
 def auralise_test():
+    # playsound("/Users/claraguo/Documents/GitHub/Blink-1470/data/classical/classical.00013.wav")
     spectogram, s_min, s_max = wav_to_spectogram("../data/pop/pop.00058.wav")
     spectogram = np.reshape(spectogram[:, 5*128:6*128], (-1, 128, 128, 1))
     filter_weight = np.ones((3, 3, 1, 32))
     bias = np.ones(32)
     weights = (filter_weight, bias)
-    masked = intrepret_activation(spectogram, weights, filter_index = 0, png_name = "conv1_filter1.png", wav_name = "conv1_filter1.wav")
+    masked = interpret_activation(spectogram, weights, filter_index = 0, png_name = "conv1_filter1.png", wav_name = "conv1_filter1.wav")
     playsound('conv1_filter1.wav')
     print(masked)
 
-    # img = spectogram_img(spectogram, "test.png")
-    # reverted = revert_to_specto(img, s_min, s_max)
-    # wav = librosa.feature.inverse.mel_to_audio(reverted)
-    # write('test.wav', sr, wav)
+    img = spectogram_img(spectogram, "test.png")
+    reverted = revert_to_specto(img, s_min, s_max)
+    wav = librosa.feature.inverse.mel_to_audio(reverted)
+    write('test.wav', sr, wav)
 
 if __name__ == "__main__":
     main()
-    # auralise_test()
