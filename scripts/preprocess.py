@@ -126,7 +126,7 @@ def wav_to_spectrogram(filename):
     S = np.log(S + 1e-9)
     return S, S.min(), S.max()
 
-
+# https://stackoverflow.com/questions/56719138/how-can-i-save-a-librosa-spectrogram-plot-as-a-specific-sized-image/57204349
 # get image from spectrogram and save it as 'name'
 def spectrogram_img(S, name):
     # scale to 0 to 255 (bw png pixel values)
