@@ -1,3 +1,6 @@
+import tensorflow as tf
+import numpy as np
+
 def mask(input, lmb=1):
   """
   input: tensor of shape (btch_size, x, y, channels)
