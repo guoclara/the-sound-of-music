@@ -26,14 +26,15 @@ def minmax_scaling(S, factor):
     S_std = (S - s_min) / (s_max - s_min)
     return (S_std * factor)
 
-# given a spectogram input and model weights, produce the masked input
+# given a spectogram input and FIRST LAYER model weights, produce the masked input
 # according to the model's activations
 # if a png or wav file name is given, produce the png/wav file
 # if no filter_index is specified, create representations for all filter activations
 # png_name and wav_name must be a list of length num_filters in this case
 
-# S: input spectogram
+# S: input spectogram of shape (1, 128, 128, 1)
 # weights: list of (weight, bias) tuples
+# index of desired filter to interpret
 def interpret_activation(S, weights, filter_index = None, png_name = None, wav_name = None):
     filter_weight, bias = weights
 
@@ -72,6 +73,48 @@ def interpret_activation(S, weights, filter_index = None, png_name = None, wav_n
 
     return masked
 
+# given a list of tuples of model weights, get the final conv activation
+# and upsample and deconvolve to get original dimensions of 128x128
+# convert this activation mapping into a png and wav
+# auralises the SECOND LAYER conv output
+
+# S: input spectogram of shape (1, 128, 128, 1)
+# weights: [(conv1_weights, conv1_bias), (conv2_weights, conv2_bias)]
+def deconvolve_and_interpret(S, weights, png_name = None, wav_name = None):
+    conv = S
+    # get the activation from second conv layer with shape (1, 32, 32, 64)
+    for filter_weight, filter_bias in weights:
+        conv = tf.nn.conv2d(conv, filter_weight, strides = (1,1), padding = "SAME")
+        conv = tf.nn.relu(tf.nn.bias_add(conv, filter_bias))
+        conv = tf.keras.layers.MaxPool2D((2,2), strides=2)(conv)
+
+    # upsample the conv output to double dimensions
+    upsampled_1 = tf.keras.layers.UpSampling2D(size=(2, 2))(conv)
+    # flip filter's left-right and up-down
+    filter_weight = filter_weight[::-1, ::-1, :, :]
+    # reverse the dimensions of in and out channels
+    filter_weight = tf.transpose(filter_weight, perm = [0,1,3,2])
+    # convolve with the flipped filter
+    deconv_1 = tf.nn.conv2d(upsampled_1, filter_weight, strides = (1,1), padding = "SAME")
+    
+    # repeat with first layer weights
+    upsampled_2 = tf.keras.layers.UpSampling2D(size=(2, 2))(deconv_1)
+    filter_weight = weights[0][0]
+    filter_weight = filter_weight[::-1, ::-1, :, :]
+    filter_weight = tf.transpose(filter_weight, perm = [0,1,3,2])
+    deconv_2 = tf.nn.conv2d(upsampled_2, filter_weight, strides = (1,1), padding = "SAME")
+
+    deconv_2 = np.squeeze(deconv_2.numpy())
+
+    if png_name is not None:
+        img = spectogram_img(deconv_2, png_name)
+    if wav_name is not None:
+        wav = librosa.feature.inverse.mel_to_audio(deconv_2)
+        write(wav_name, sr, wav)
+
+    return deconv_2
+
+
 # calculate log scaled melspectorgram from wav file
 def wav_to_spectogram(filename):
     y, sr = librosa.load(filename)
@@ -106,7 +149,7 @@ def revert_to_specto(img, s_min, s_max):
     scaled = np.flip((255 - img), axis=0)
     return (scaled / 255) * (s_max - s_min) + s_min
 
-
+# takes in inputs and labels and shuffles them together
 def shuffle_data(inputs, labels):
     indices = np.arange(labels.shape[0])
     np.random.shuffle(indices)
@@ -129,6 +172,7 @@ def make_square(genre, s):
         s[:, 9*128:10*128]]
     )
 
+# test if masking makes audible sense for a spectogram
 def play_masked_spectogram_test():
     spectogram, s_min, s_max = wav_to_spectogram("../data/pop/pop.00058.wav")
     spectogram = spectogram[:, 5*128:6*128]
@@ -141,6 +185,7 @@ def play_masked_spectogram_test():
     write('masked.wav', sr, wav)
     playsound('masked.wav')
 
+# preprocess the data into test, validate, and train groups
 def main():
     blues = []
     classical = []
@@ -328,7 +373,7 @@ def main():
     test_data, test_labels = shuffle_data(test_data, test_labels)
     return (train_data, train_labels, validate_data, validate_labels, test_data, test_labels)
 
-
+# test auralisation procedure
 def auralise_test():
     # playsound("/Users/claraguo/Documents/GitHub/Blink-1470/data/classical/classical.00013.wav")
     spectogram, s_min, s_max = wav_to_spectogram("../data/pop/pop.00058.wav")
