@@ -7,3 +7,4 @@ playsound
 scipy
 scikit-image
 random
+streamlit
