@@ -45,7 +45,7 @@ class BasicCNN(tf.keras.Model):
         conv1_pool = self.pool1(conv1_out)
         conv2_out = self.conv2(conv1_pool)
         # TODO: add mask here (mask feature map with template for each filter)
-        mask_func(conv2_out)
+        # mask_func(conv2_out)
         conv2_pool = self.pool2(conv2_out)
 
         # Flatten tensor to pass through linear layer(s)
