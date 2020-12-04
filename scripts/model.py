@@ -44,7 +44,6 @@ class BasicCNN(tf.keras.Model):
         conv1_out = self.conv1(inputs)
         conv1_pool = self.pool1(conv1_out)
         conv2_out = self.conv2(conv1_pool)
-        # TODO: add mask here (mask feature map with template for each filter)
         conv2_pool = self.pool2(conv2_out)
 
         # Flatten tensor to pass through linear layer(s)
@@ -55,15 +54,6 @@ class BasicCNN(tf.keras.Model):
 
         # NOTE: compute softmax on logits (and find classes) in loss func
         return logits
-
-    # def mask_func(self, maps):
-    #     """
-	# 	Uses feature maps select and apply desired template
-	# 	:param maps: 64 feature maps outputted from higher conv2D layer
-	# 	:returns: masked feature maps
-	# 	"""
-    #     # TODO: write mask function in TF ops
-    #     pass
 
     def loss_func(self, logits, labels):
         """
