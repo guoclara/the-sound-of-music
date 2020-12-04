@@ -57,14 +57,14 @@ class BasicCNN(tf.keras.Model):
         # NOTE: compute softmax on logits (and find classes) in loss func
         return logits
 
-    def mask_func(self, maps):
-        """
-		Uses feature maps select and apply desired template
-		:param maps: 64 feature maps outputted from higher conv2D layer
-		:returns: masked feature maps
-		"""
-        # TODO: write mask function in TF ops
-        pass
+    # def mask_func(self, maps):
+    #     """
+	# 	Uses feature maps select and apply desired template
+	# 	:param maps: 64 feature maps outputted from higher conv2D layer
+	# 	:returns: masked feature maps
+	# 	"""
+    #     # TODO: write mask function in TF ops
+    #     pass
 
     def loss_func(self, logits, labels):
         """
