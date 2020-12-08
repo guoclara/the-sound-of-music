@@ -77,7 +77,10 @@ class BasicCNN(tf.keras.Model):
 
         return tf.reduce_mean(tf.cast(num_correct_predictions, tf.float32))
 
-    # NOTE: we will not be using the interpretable loss and instead implementing global average pooling for interpretability
+    # NOTE: we will not be using the interpretable loss and instead implementing 
+    # global average pooling for interpretability -- please refer to poster (in repo)
+    # for reasoning
+
     # def filter_loss_func(self, maps, filter_categories, input_categories, templates):
     # 	"""
     # 	Calculates filter loss in forward pass
