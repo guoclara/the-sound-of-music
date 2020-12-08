@@ -10,7 +10,7 @@ b) we are applying the model to a different dataset (spectrograms rather than vi
 Another source of possible references for our project are these Kaggle notebooks: https://www.kaggle.com/andradaolteanu/gtzan-dataset-music-genre-classification/notebooks. We do not plan on referencing these for our project, but have listed them here for transparency, since our dataset is somewhat commmon.
 
 **UI usage:**  
-To visualize and compare activations between the base CNN model and the masked CNN model, please reference the UI (built on streamlit). It is important to note that to properly play the .wav files and display the activatiosn, this repo must be cloned prior to running. Please make sure to activate the virtual environment and run the requirements script with the following commands:
+To visualize and compare activations between the base CNN model and the masked CNN model, please reference the UI (built on streamlit). It is important to note that to properly play the .wav files and display the activatiosn, this repo must be cloned prior to running. Please make sure to activate the virtual environment (with Python 3.8) and run the requirements script with the following commands:
 ```
 source .venv/bin/activate
 pip install -r requirements.txt
