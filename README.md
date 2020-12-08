@@ -19,4 +19,4 @@ To run the UI (in your localhost), you can run the following command from the sc
 ```
 streamlit run app.py
 ```
-Please refer to the [Streamlit docs](https://docs.streamlit.io/en/stable/) for more information.
+It is important to note that to properly play the .wav files and display the activatiosn, this repo must be cloned prior to running. Please refer to the [Streamlit docs](https://docs.streamlit.io/en/stable/) for more information.
