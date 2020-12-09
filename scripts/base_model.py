@@ -6,7 +6,7 @@ import numpy as np
 class BasicCNN(tf.keras.Model):
     def __init__(self):
         """
-		Just a basic CNN architecture.
+		Just a basic CNN architecture
 		"""
         super(BasicCNN, self).__init__()
 

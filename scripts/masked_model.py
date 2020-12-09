@@ -51,7 +51,7 @@ def mask(input, lmb=1):
 class MaskedCNN(tf.keras.Model):
     def __init__(self, num_categories):
         """
-        Just a basic CNN architecture.
+        CNN with masking
         """
         super(MaskedCNN, self).__init__()
 
