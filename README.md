@@ -1,6 +1,4 @@
 # Blink-1470
-CSCI 1470 Final Project
-
 Please refer to the poster (found in this repo) for project details, implementation, and results.
 
 **UI usage:**  
