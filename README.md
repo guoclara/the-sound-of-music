@@ -1,4 +1,4 @@
-# Interpretaive Convolutional Neural Networks
+# Interpretive Convolutional Neural Networks
 Our attempt at determining what a CNN trained to categorize music genres thinks are the characteristic sounds of each genre
 Please refer to the poster (found in this repo) for project details, implementation, and results.
 
