@@ -12,3 +12,7 @@ To run the UI (in your localhost), you can run the following command from the sc
 streamlit run app.py
 ```
 Please refer to the [Streamlit docs](https://docs.streamlit.io/en/stable/) for more information.
+
+**Hackathon Poster:**
+
+<img width="1389" alt="Screen Shot 2022-08-17 at 11 01 06 AM" src="https://user-images.githubusercontent.com/48026886/185173661-9539624a-61fb-433f-8739-3c8b010a422f.png">
